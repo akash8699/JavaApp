@@ -61,7 +61,10 @@ jobs:
         run: |
           echo "Logging into AWS ECR Public..."
           aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin public.ecr.aws
-
+      - name: Build Docker Image
+        run: |
+          echo "Building Docker Image..."
+          docker build -t $image_uri .
       - name: Push Docker Image ECR
         run: |
           echo "Pushing Docker Image..."

@@ -16,9 +16,9 @@ env:
     ECR_REPO_NAME: 'akashjenkinsecr'
     AWS_REGION: 'us-east-1'
     ECR_PUBLIC_REPO_URI: 'public.ecr.aws/i4d6z1a1/akashjenkinsecr'
-    IMAGE_TAG: 'Latest_Image'
+    IMAGE_TAG: 'latest-image'
     AWS_ACCOUNT_ID: '705307574220'
-    IMAGE_URI: "${{ECR_PUBLIC_REPO_URI}}:${{IMAGE_TAG}}"
+    IMAGE_URI: "${ECR_PUBLIC_REPO_URI}:${IMAGE_TAG}"
 jobs:  
   build-and-push:
     runs-on: ubuntu-latest

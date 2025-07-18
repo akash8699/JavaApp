@@ -6,24 +6,60 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI with Maven
+name: Complete CI/CD Process
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-jobs:
-  build:
+env:
+    ECR_REPO_NAME: 'akashjenkinsecr'
+    AWS_REGION: 'ap-south-1'
+    ECR_PUBLIC_REPO_URI: 'public.ecr.aws/i4d6z1a1/akashjenkinsecr'
+    IMAGE_TAG: 'Latest_Image'
+    AWS_ACCOUNT_ID: '705307574220'
+    IMAGE_URI: "${ECR_PUBLIC_REPO_URI}:${IMAGE_TAG}"
+jobs:  
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+              aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+              aws-secret-access-key: ${{secretes.AWS_SECRET_ACCESS_KEY}}
+              aws-region: ${{env.AWS_REGION}}
+
+      - name: Build with Maven
+        run: |
+          echo "Building Java Application"
+          mvn clean package
+          
+      - name: Login to AWS ECR Repository
+        run: |
+          echo "Logging into AWS ECR Public..."
+          aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin public.ecr.aws
+
+      - name: Push Docker Image ECR
+        run: |
+          echo "Pushing Docker Image..."
+          docker push $IMAGE_URI
+          
+          
+          
+          
+              
+      
+    
+  
 
  
